@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growth OS - The Gentleman of Marketing</title>
-    
+    <title>The Gentleman of Marketing - Growth OS Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,519 +12,451 @@
                     colors: {
                         brand: {
                             gold: '#a98a66',
-                            goldLight: '#c2a583',
-                            goldDark: '#8c704f',
                             black: '#000000',
                             white: '#ffffff',
-                            blue: '#1E3A8A', 
-                            blueLight: '#3B82F6',
+                            blue: '#2563eb'
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <!-- Include Inter font for a clean, modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Include Lucide icons via CDN for vanilla JS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            background-color: #f3f4f6;
-            margin: 0;
-            padding: 0;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #000000; }
+        /* Custom checkbox styles to hide default and use icons */
+        .task-checkbox { display: none; }
+        .task-label { cursor: pointer; display: flex; align-items: flex-start; gap: 0.75rem; }
+        .task-text { transition: all 0.2s ease; }
+        .task-checkbox:checked + .task-text { text-decoration: line-through; color: #9ca3af; }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="min-h-screen bg-brand-white text-brand-black">
 
-    <script type="text/babel">
-        const { useState, useMemo, useEffect } = React;
-        const { 
-            CheckCircle2, 
-            Circle, 
-            Target, 
-            TrendingUp, 
-            Calendar, 
-            LayoutDashboard,
-            Award,
-            Briefcase,
-            Users,
-            Settings
-        } = window.lucideReact;
+    <!-- HEADER SECTION -->
+    <header class="border-b-2 border-brand-black">
+        <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight uppercase text-brand-black">
+                        The Gentleman of <span class="text-brand-gold">Marketing</span>
+                    </h1>
+                    <p class="mt-2 text-xl font-medium tracking-wide text-gray-600 flex items-center gap-2">
+                        <i data-lucide="target" class="w-5 h-5 text-brand-blue"></i> 12-Month Action Plan
+                    </p>
+                </div>
+                
+                <!-- OVERALL PROGRESS -->
+                <div class="w-full md:w-64 bg-gray-50 p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-sm font-bold uppercase tracking-wider text-brand-black">Overall Master Plan</span>
+                        <span id="overall-progress-text" class="text-2xl font-bold text-brand-blue">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="overall-progress-bar" class="h-2.5 rounded-full transition-all duration-500 ease-in-out bg-brand-blue" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-        const marketingPlan = [
+    <main class="max-w-6xl mx-auto px-6 py-10">
+        
+        <!-- PHASE NAVIGATION -->
+        <div id="phase-nav" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+            <!-- Navigation buttons will be injected here by JS -->
+        </div>
+
+        <!-- ACTIVE PHASE CONTENT -->
+        <div class="bg-white border-2 border-brand-gold rounded-2xl shadow-sm p-6 md:p-10">
+            
+            <!-- Phase Header -->
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10 pb-8 border-b border-gray-100">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span id="active-phase-months" class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-gray-100 text-brand-black">
+                            <!-- Months injected here -->
+                        </span>
+                        <span class="text-sm font-bold flex items-center gap-1 text-brand-gold">
+                            <i data-lucide="trending-up" class="w-4 h-4"></i> Target MRR: <span id="active-phase-mrr"></span>
+                        </span>
+                    </div>
+                    <h2 id="active-phase-title" class="text-3xl font-bold text-brand-black">
+                        <!-- Title injected here -->
+                    </h2>
+                    <p class="text-lg mt-2 font-medium text-brand-blue">
+                        Goal: <span id="active-phase-goal"></span>
+                    </p>
+                </div>
+                
+                <!-- Phase Progress -->
+                <div class="w-full lg:w-48">
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Phase Progress</span>
+                        <span id="phase-progress-text" class="text-lg font-bold text-brand-gold">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                        <div id="phase-progress-bar" class="h-2 rounded-full transition-all duration-500 ease-in-out bg-brand-gold" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Months Grid -->
+            <div id="months-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Month cards will be injected here by JS -->
+            </div>
+
+        </div>
+    </main>
+    
+    <!-- FOOTER -->
+    <footer class="text-center py-10 mt-10 border-t border-gray-200">
+        <p class="text-sm font-bold text-gray-400 uppercase tracking-widest flex justify-center items-center gap-2">
+            <i data-lucide="target" class="w-4 h-4"></i> Growth OS Dashboard
+        </p>
+    </footer>
+
+    <script>
+        // --- DATA ---
+        const PLAN_DATA = [
             {
-                id: 1,
+                phase: 1,
                 title: "Foundation & Launch",
-                icon: <Briefcase className="w-5 h-5" />,
-                months: "1-3",
+                months: "Months 1-3",
                 goal: "Secure Your First 2-3 Retainer Clients",
-                target: "$5,000 - $12,000 MRR",
+                targetMRR: "$5,000 - $12,000",
+                icon: "briefcase",
                 monthsData: [
                     {
-                        id: 1,
-                        title: "Month 1",
+                        month: 1,
                         focus: "Brand & Asset Creation",
-                        tasks: [
-                            { id: "m1-1", text: "Finalize your top 2-3 target niches (e.g., Real Estate, E-commerce)." },
-                            { id: "m1-2", text: "Build your professional website and LinkedIn Company Page." },
-                            { id: "m1-3", text: "Create your polished service deck using case study data." },
-                            { id: "m1-4", text: "Begin identifying your first 50 prospects on LinkedIn." }
+                        actions: [
+                            "Finalize your top 2-3 target niches (e.g., Real Estate, E-commerce).",
+                            "Build your professional website and LinkedIn Company Page.",
+                            "Create your polished service deck using case study data.",
+                            "Begin identifying your first 50 prospects on LinkedIn."
                         ]
                     },
                     {
-                        id: 2,
-                        title: "Month 2",
+                        month: 2,
                         focus: "Content Launch & Initial Outreach",
-                        tasks: [
-                            { id: "m2-1", text: "Record and release the first 4 episodes of the MBR Podcast." },
-                            { id: "m2-2", text: "Publish 4-6 foundational blog posts targeting your niche's pain points." },
-                            { id: "m2-3", text: "Begin your personalized LinkedIn outreach campaign, providing value upfront." },
-                            { id: "m2-4", text: "Actively network in at least two relevant online communities." }
+                        actions: [
+                            "Record and release the first 4 episodes of the MBR Podcast.",
+                            "Publish 4-6 foundational blog posts targeting your niche's pain points.",
+                            "Begin your personalized LinkedIn outreach campaign, providing value upfront.",
+                            "Actively network in at least two relevant online communities."
                         ]
                     },
                     {
-                        id: 3,
-                        title: "Month 3",
+                        month: 3,
                         focus: "Securing First Clients",
-                        tasks: [
-                            { id: "m3-1", text: "Continue consistent outreach and networking." },
-                            { id: "m3-2", text: "Aim to book at least 4-6 strategy sessions." },
-                            { id: "m3-3", text: "Execute your sales process: Discover, Propose, and Close." },
-                            { id: "m3-4", text: "Goal: Onboard your first 2-3 retainer clients." }
+                        actions: [
+                            "Continue consistent outreach and networking.",
+                            "Aim to book at least 4-6 strategy sessions.",
+                            "Execute your sales process: Discover, Propose, and Close.",
+                            "Goal: Onboard your first 2-3 retainer clients."
                         ]
                     }
                 ]
             },
             {
-                id: 2,
+                phase: 2,
                 title: "Client Acquisition & Systemization",
-                icon: <Users className="w-5 h-5" />,
-                months: "4-6",
+                months: "Months 4-6",
                 goal: "Scale to 5-8 Retainer Clients",
-                target: "$15,000 - $25,000 MRR",
+                targetMRR: "$15,000 - $25,000",
+                icon: "users",
                 monthsData: [
                     {
-                        id: 4,
-                        title: "Month 4",
+                        month: 4,
                         focus: "Service Delivery & Systemization",
-                        tasks: [
-                            { id: "m4-1", text: "Deliver exceptional results for your initial clients." },
-                            { id: "m4-2", text: "Begin documenting your service delivery into repeatable checklists." },
-                            { id: "m4-3", text: "Implement a CRM to manage your client pipeline." }
+                        actions: [
+                            "Deliver exceptional results for your initial clients.",
+                            "Begin documenting your service delivery into repeatable checklists.",
+                            "Implement a CRM to manage your client pipeline."
                         ]
                     },
                     {
-                        id: 5,
-                        title: "Month 5",
+                        month: 5,
                         focus: "Building Social Proof & Ramping Up Marketing",
-                        tasks: [
-                            { id: "m5-1", text: "Secure your first video testimonials and written case studies from happy clients." },
-                            { id: "m5-2", text: "Host your first high-value webinar for lead generation." },
-                            { id: "m5-3", text: "Launch a small, targeted paid ad campaign to promote the webinar." }
+                        actions: [
+                            "Secure your first video testimonials and written case studies from happy clients.",
+                            "Host your first high-value webinar for lead generation.",
+                            "Launch a small, targeted paid ad campaign to promote the webinar."
                         ]
                     },
                     {
-                        id: 6,
-                        title: "Month 6",
+                        month: 6,
                         focus: "Scaling Lead Flow",
-                        tasks: [
-                            { id: "m6-1", text: "Refine and repeat your webinar and paid ad strategy." },
-                            { id: "m6-2", text: "Double your organic outreach efforts." },
-                            { id: "m6-3", text: "Implement a simple referral program and ask your happy clients for introductions." }
+                        actions: [
+                            "Refine and repeat your webinar and paid ad strategy.",
+                            "Double your organic outreach efforts.",
+                            "Implement a simple referral program and ask your happy clients for introductions."
                         ]
                     }
                 ]
             },
             {
-                id: 3,
+                phase: 3,
                 title: "Scaling & Authority Building",
-                icon: <Award className="w-5 h-5" />,
-                months: "7-9",
+                months: "Months 7-9",
                 goal: "Reach 10-12 Retainer Clients",
-                target: "$30,000 - $40,000 MRR",
+                targetMRR: "$30,000 - $40,000",
+                icon: "award",
                 monthsData: [
                     {
-                        id: 7,
-                        title: "Month 7",
+                        month: 7,
                         focus: "Team & Capacity Growth",
-                        tasks: [
-                            { id: "m7-1", text: "Hire your first team member (e.g., a virtual assistant or junior specialist)." },
-                            { id: "m7-2", text: "Use your documented processes to onboard them efficiently." },
-                            { id: "m7-3", text: "Delegate process-driven tasks to free up your time for sales and strategy." }
+                        actions: [
+                            "Hire your first team member (e.g., a virtual assistant or junior specialist).",
+                            "Use your documented processes to onboard them efficiently.",
+                            "Delegate process-driven tasks to free up your time for sales and strategy."
                         ]
                     },
                     {
-                        id: 8,
-                        title: "Month 8",
+                        month: 8,
                         focus: "Authority Building",
-                        tasks: [
-                            { id: "m8-1", text: "Begin actively pursuing speaking opportunities on other podcasts or at industry events." },
-                            { id: "m8-2", text: "Start planning your first exclusive \"Gentleman of Marketing\" networking event or retreat." }
+                        actions: [
+                            "Begin actively pursuing speaking opportunities on other podcasts or at industry events.",
+                            "Start planning your first exclusive \"Gentleman of Marketing\" networking event or retreat."
                         ]
                     },
                     {
-                        id: 9,
-                        title: "Month 9",
+                        month: 9,
                         focus: "High-Ticket Conversion",
-                        tasks: [
-                            { id: "m9-1", text: "Host your signature networking event/retreat." },
-                            { id: "m9-2", text: "Use the event as a platform for thought leadership and to acquire new high-value clients." },
-                            { id: "m9-3", text: "Continue building your reputation as a go-to authority in your niche." }
+                        actions: [
+                            "Host your signature networking event/retreat.",
+                            "Use the event as a platform for thought leadership and to acquire new high-value clients.",
+                            "Continue building your reputation as a go-to authority in your niche."
                         ]
                     }
                 ]
             },
             {
-                id: 4,
+                phase: 4,
                 title: "Optimization & Expansion",
-                icon: <Settings className="w-5 h-5" />,
-                months: "10-12",
-                goal: "Stabilize at $40,000+ MRR & Plan Future Growth",
-                target: "$40,000+ MRR",
+                months: "Months 10-12",
+                goal: "Stabilize & Plan Future Growth",
+                targetMRR: "$40,000+",
+                icon: "trending-up",
                 monthsData: [
                     {
-                        id: 10,
-                        title: "Month 10",
+                        month: 10,
                         focus: "Client & Profitability Optimization",
-                        tasks: [
-                            { id: "m10-1", text: "Analyze the profitability and fit of your entire client roster." },
-                            { id: "m10-2", text: "Confidently raise your prices for new clients based on your proven results." }
+                        actions: [
+                            "Analyze the profitability and fit of your entire client roster.",
+                            "Confidently raise your prices for new clients based on your proven results."
                         ]
                     },
                     {
-                        id: 11,
-                        title: "Month 11",
+                        month: 11,
                         focus: "Refining the Marketing Engine",
-                        tasks: [
-                            { id: "m11-1", text: "Conduct a deep-dive analysis of your marketing channels." },
-                            { id: "m11-2", text: "Double down on the highest-ROI activities and cut underperforming ones." },
-                            { id: "m11-3", text: "Make your business its own best case study for marketing optimization." }
+                        actions: [
+                            "Conduct a deep-dive analysis of your marketing channels.",
+                            "Double down on the highest-ROI activities and cut underperforming ones.",
+                            "Make your business its own best case study for marketing optimization."
                         ]
                     },
                     {
-                        id: 12,
-                        title: "Month 12",
+                        month: 12,
                         focus: "Strategic Planning for Year 2",
-                        tasks: [
-                            { id: "m12-1", text: "Celebrate achieving a consistent $40k MRR." },
-                            { id: "m12-2", text: "Create a new 12-month strategic plan for the upcoming year, focusing on sustainable growth, new service offerings, or further team expansion." }
+                        actions: [
+                            "Celebrate achieving a consistent $40k MRR.",
+                            "Create a new 12-month strategic plan for the upcoming year, focusing on sustainable growth, new service offerings, or further team expansion."
                         ]
                     }
                 ]
             }
         ];
 
-        const ProgressBar = ({ progress, label, className = "", barColor = "bg-brand-gold", trackColor = "bg-slate-200", textColor = "text-slate-700" }) => (
-            <div className={`w-full ${className}`}>
-                {label && (
-                    <div className={`flex justify-between items-center mb-1 text-sm font-medium ${textColor}`}>
-                        <span>{label}</span>
-                        <span>{Math.round(progress)}%</span>
-                    </div>
-                )}
-                <div className={`w-full ${trackColor} rounded-full h-2.5 overflow-hidden`}>
-                    <div 
-                        className={`${barColor} h-2.5 rounded-full transition-all duration-500 ease-out`} 
-                        style={{ width: `${progress}%` }}
-                    ></div>
-                </div>
-            </div>
-        );
+        let activePhase = 1;
+        let tasks = JSON.parse(localStorage.getItem('gentlemanMarketingTasks')) || {};
 
-        function App() {
-            const [activePhase, setActivePhase] = useState(1);
-            
-            // Load saved progress from local storage so it isn't lost on refresh
-            const [completedTasks, setCompletedTasks] = useState(() => {
-                try {
-                    const saved = localStorage.getItem('growthOSTasks');
-                    return saved ? JSON.parse(saved) : {};
-                } catch (e) {
-                    return {};
-                }
-            });
-
-            // Save progress to local storage when tasks are checked/unchecked
-            useEffect(() => {
-                localStorage.setItem('growthOSTasks', JSON.stringify(completedTasks));
-            }, [completedTasks]);
-
-            const toggleTask = (taskId) => {
-                setCompletedTasks(prev => ({
-                    ...prev,
-                    [taskId]: !prev[taskId]
-                }));
-            };
-
-            const stats = useMemo(() => {
-                let totalTasks = 0;
-                let totalCompleted = 0;
-                const phaseStats = {};
-
-                marketingPlan.forEach(phase => {
-                    let phaseTasks = 0;
-                    let phaseCompleted = 0;
-
-                    phase.monthsData.forEach(month => {
-                        month.tasks.forEach(task => {
-                            totalTasks++;
-                            phaseTasks++;
-                            if (completedTasks[task.id]) {
-                                totalCompleted++;
-                                phaseCompleted++;
-                            }
-                        });
-                    });
-
-                    phaseStats[phase.id] = {
-                        total: phaseTasks,
-                        completed: phaseCompleted,
-                        progress: phaseTasks === 0 ? 0 : (phaseCompleted / phaseTasks) * 100
-                    };
-                });
-
-                return {
-                    totalTasks,
-                    totalCompleted,
-                    overallProgress: totalTasks === 0 ? 0 : (totalCompleted / totalTasks) * 100,
-                    phaseStats
-                };
-            }, [completedTasks]);
-
-            const activePhaseData = marketingPlan.find(p => p.id === activePhase);
-
-            return (
-                <div className="h-screen w-full bg-gray-50 flex flex-col md:flex-row text-brand-black overflow-hidden font-sans">
-                    
-                    {/* Sidebar Navigation */}
-                    <aside className="w-full md:w-72 bg-brand-black text-brand-white flex flex-col shadow-2xl z-20 shrink-0 border-r border-brand-gold/20">
-                        <div className="p-6">
-                            <div className="flex items-center gap-3 text-brand-white mb-6">
-                                <div className="bg-brand-gold/20 p-2 rounded-xl text-brand-gold border border-brand-gold/30">
-                                    <LayoutDashboard className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h1 className="font-bold text-lg leading-tight tracking-wide">Growth OS</h1>
-                                    <p className="text-xs text-brand-goldLight uppercase tracking-widest mt-1">The Gentleman</p>
-                                </div>
-                            </div>
-                            
-                            <div className="bg-white/5 p-5 rounded-2xl mb-6 border border-brand-gold/20 backdrop-blur-sm">
-                                <p className="text-xs font-semibold text-brand-goldLight mb-3 uppercase tracking-wider">Overall Progress</p>
-                                <ProgressBar 
-                                    progress={stats.overallProgress} 
-                                    label={`${stats.totalCompleted} / ${stats.totalTasks} Tasks`} 
-                                    textColor="text-brand-white"
-                                    barColor="bg-brand-gold"
-                                    trackColor="bg-white/10"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Desktop Phase List */}
-                        <nav className="flex-1 px-4 pb-6 overflow-y-auto hidden md:block scrollbar-hide">
-                            <p className="text-xs font-semibold text-brand-white/40 mb-4 px-2 uppercase tracking-wider">The 12-Month Plan</p>
-                            <ul className="space-y-3">
-                                {marketingPlan.map((phase) => {
-                                    const isActive = activePhase === phase.id;
-                                    const isCompleted = stats.phaseStats[phase.id].progress === 100;
-                                    
-                                    return (
-                                        <li key={phase.id}>
-                                            <button
-                                                onClick={() => setActivePhase(phase.id)}
-                                                className={`w-full flex flex-col text-left px-5 py-4 rounded-2xl transition-all duration-300 border ${
-                                                    isActive 
-                                                        ? 'bg-gradient-to-br from-brand-gold/20 to-brand-gold/5 border-brand-gold/50 shadow-lg shadow-brand-gold/5' 
-                                                        : 'border-transparent hover:bg-white/5 text-brand-white/60 hover:text-brand-white'
-                                                }`}
-                                            >
-                                                <div className="flex items-center justify-between w-full mb-2">
-                                                    <div className="flex items-center gap-3">
-                                                        {isCompleted && !isActive ? (
-                                                            <CheckCircle2 className="w-5 h-5 text-brand-gold" />
-                                                        ) : (
-                                                            <div className={isActive ? "text-brand-gold" : "text-brand-white/40"}>
-                                                                {phase.icon}
-                                                            </div>
-                                                        )}
-                                                        <span className={`font-semibold text-sm ${isActive ? 'text-brand-goldLight' : ''}`}>Phase {phase.id}</span>
-                                                    </div>
-                                                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${isActive ? 'bg-brand-gold/20 text-brand-gold' : 'bg-white/5 text-brand-white/40'}`}>
-                                                        M {phase.months}
-                                                    </span>
-                                                </div>
-                                                <span className={`text-sm truncate w-full ${isActive ? 'text-brand-white' : 'text-brand-white/50'}`}>
-                                                    {phase.title}
-                                                </span>
-                                                
-                                                <div className="w-full bg-white/10 rounded-full h-1 mt-4 overflow-hidden">
-                                                    <div 
-                                                        className={`h-1 rounded-full transition-all duration-500 ${isActive ? 'bg-brand-gold' : 'bg-brand-gold/40'}`}
-                                                        style={{ width: `${stats.phaseStats[phase.id].progress}%` }}
-                                                    ></div>
-                                                </div>
-                                            </button>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </nav>
-
-                        {/* Mobile Phase Tabs */}
-                        <div className="md:hidden flex overflow-x-auto px-4 pb-4 gap-3 scrollbar-hide">
-                            {marketingPlan.map((phase) => (
-                                <button
-                                    key={phase.id}
-                                    onClick={() => setActivePhase(phase.id)}
-                                    className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-semibold transition-all border ${
-                                        activePhase === phase.id 
-                                            ? 'bg-brand-gold/20 border-brand-gold text-brand-goldLight' 
-                                            : 'bg-white/5 border-transparent text-brand-white/60'
-                                    }`}
-                                >
-                                    Phase {phase.id}
-                                </button>
-                            ))}
-                        </div>
-                    </aside>
-
-                    {}
-                    <main className="flex-1 flex flex-col h-full overflow-hidden bg-gray-50">
-                        
-                        {/* Phase Header */}
-                        <header className="bg-brand-white border-b border-gray-200 px-6 py-8 md:px-10 shrink-0 shadow-sm z-10">
-                            <div className="max-w-5xl mx-auto">
-                                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                                    <div>
-                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-brand-blue/10 text-brand-blue mb-4 border border-brand-blue/20">
-                                            <Calendar className="w-3.5 h-3.5" />
-                                            Months {activePhaseData.months}
-                                        </span>
-                                        <h2 className="text-3xl md:text-4xl font-extrabold text-brand-black mb-4 tracking-tight">
-                                            {activePhaseData.title}
-                                        </h2>
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-gray-600">
-                                            <div className="flex items-center gap-2.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                                                <Target className="w-5 h-5 text-brand-gold" />
-                                                <span className="font-medium text-sm">Goal: {activePhaseData.goal}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                                                <TrendingUp className="w-5 h-5 text-brand-blue" />
-                                                <span className="font-medium text-sm">Target: {activePhaseData.target}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="w-full md:w-72 bg-gray-50 p-5 rounded-2xl border border-gray-200 shadow-inner">
-                                        <ProgressBar 
-                                            progress={stats.phaseStats[activePhase].progress} 
-                                            label="Phase Progress" 
-                                            barColor="bg-brand-blue"
-                                            trackColor="bg-gray-200"
-                                            textColor="text-brand-black"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </header>
-
-                        {/* Task List Grid */}
-                        <div className="flex-1 overflow-y-auto p-6 md:p-10">
-                            <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                {activePhaseData.monthsData.map((month) => {
-                                    const totalMonthTasks = month.tasks.length;
-                                    const completedMonthTasks = month.tasks.filter(t => completedTasks[t.id]).length;
-                                    const monthProgress = (completedMonthTasks / totalMonthTasks) * 100;
-                                    const isMonthCompleted = monthProgress === 100;
-
-                                    return (
-                                        <div 
-                                            key={month.id} 
-                                            className={`flex flex-col bg-brand-white rounded-3xl shadow-sm border transition-all duration-300 ${
-                                                isMonthCompleted ? 'border-brand-gold bg-brand-gold/5 shadow-brand-gold/10' : 'border-gray-200 hover:shadow-md hover:border-brand-gold/30'
-                                            }`}
-                                        >
-                                            <div className={`p-6 border-b ${isMonthCompleted ? 'border-brand-gold/20' : 'border-gray-100'}`}>
-                                                <div className="flex justify-between items-center mb-3">
-                                                    <h3 className="text-xl font-bold text-brand-black">{month.title}</h3>
-                                                    {isMonthCompleted && <CheckCircle2 className="w-6 h-6 text-brand-gold drop-shadow-sm" />}
-                                                </div>
-                                                <p className="text-sm font-semibold text-brand-blue mb-5 bg-brand-blue/5 inline-block px-3 py-1.5 rounded-lg border border-brand-blue/10">
-                                                    {month.focus}
-                                                </p>
-                                                <ProgressBar 
-                                                    progress={monthProgress} 
-                                                    className="h-2" 
-                                                    barColor={isMonthCompleted ? "bg-brand-gold" : "bg-brand-blue"}
-                                                    trackColor="bg-gray-100"
-                                                    label={false}
-                                                />
-                                            </div>
-
-                                            <div className="p-3 flex-1 bg-gray-50/50 rounded-b-3xl">
-                                                <ul className="space-y-2">
-                                                    {month.tasks.map((task) => {
-                                                        const isDone = completedTasks[task.id];
-                                                        return (
-                                                            <li key={task.id}>
-                                                                <button
-                                                                    onClick={() => toggleTask(task.id)}
-                                                                    className={`w-full text-left flex items-start gap-3 p-4 rounded-2xl transition-all duration-200 border ${
-                                                                        isDone 
-                                                                            ? 'bg-gray-100/50 border-transparent' 
-                                                                            : 'bg-brand-white border-gray-200 hover:border-brand-gold/40 hover:shadow-sm'
-                                                                    }`}
-                                                                >
-                                                                    <div className="mt-0.5 shrink-0 transition-colors">
-                                                                        {isDone ? (
-                                                                            <CheckCircle2 className="w-5 h-5 text-brand-gold" />
-                                                                        ) : (
-                                                                            <Circle className="w-5 h-5 text-gray-300 group-hover:text-brand-blue" />
-                                                                        )}
-                                                                    </div>
-                                                                    <span className={`text-sm leading-relaxed transition-all duration-300 ${
-                                                                        isDone 
-                                                                            ? 'text-gray-400 line-through decoration-gray-300' 
-                                                                            : 'text-brand-black/80 font-medium'
-                                                                    }`}>
-                                                                        {task.text}
-                                                                    </span>
-                                                                </button>
-                                                            </li>
-                                                        );
-                                                    })}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                            <div className="h-12 w-full"></div> {/* Spacer for bottom scroll */}
-                        </div>
-                    </main>
-                </div>
-            );
+        function saveTasks() {
+            localStorage.setItem('gentlemanMarketingTasks', JSON.stringify(tasks));
+            updateProgress();
+            renderMonths(); // Re-render to update UI states (completed markers, etc.)
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        function toggleTask(taskId) {
+            tasks[taskId] = !tasks[taskId];
+            saveTasks();
+        }
+
+        function updateProgress() {
+            let totalTasks = 0;
+            let completedTasks = 0;
+            let activePhaseCompletedTasks = 0;
+            let activePhaseTotalTasks = 0;
+
+            PLAN_DATA.forEach(phase => {
+                phase.monthsData.forEach(month => {
+                    month.actions.forEach((action, idx) => {
+                        const taskId = `m${month.month}-a${idx}`;
+                        totalTasks++;
+                        if (phase.phase === activePhase) {
+                            activePhaseTotalTasks++;
+                        }
+                        if (tasks[taskId]) {
+                            completedTasks++;
+                            if (phase.phase === activePhase) {
+                                activePhaseCompletedTasks++;
+                            }
+                        }
+                    });
+                });
+            });
+
+            const overallProgress = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+            const phaseProgress = activePhaseTotalTasks === 0 ? 0 : Math.round((activePhaseCompletedTasks / activePhaseTotalTasks) * 100);
+
+            document.getElementById('overall-progress-text').innerText = `${overallProgress}%`;
+            document.getElementById('overall-progress-bar').style.width = `${overallProgress}%`;
+            
+            document.getElementById('phase-progress-text').innerText = `${phaseProgress}%`;
+            document.getElementById('phase-progress-bar').style.width = `${phaseProgress}%`;
+        }
+
+        function renderNav() {
+            const navContainer = document.getElementById('phase-nav');
+            navContainer.innerHTML = '';
+            
+            PLAN_DATA.forEach(phase => {
+                const isActive = phase.phase === activePhase;
+                const btnClasses = isActive 
+                    ? 'flex flex-col p-4 border-2 rounded-xl text-left transition-all duration-200 shadow-md translate-y-[-2px] border-brand-gold bg-brand-black text-brand-white'
+                    : 'flex flex-col p-4 border-2 rounded-xl text-left transition-all duration-200 bg-white hover:border-gray-300 hover:shadow-sm border-gray-200 bg-brand-white text-brand-black';
+                
+                const iconColor = isActive ? 'text-brand-gold' : 'text-brand-black';
+                const subTextColor = isActive ? 'text-gray-300' : 'text-gray-500';
+
+                const btnHTML = `
+                    <button onclick="setActivePhase(${phase.phase})" class="${btnClasses}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="${iconColor}">
+                                <i data-lucide="${phase.icon}" class="w-6 h-6"></i>
+                            </span>
+                            <span class="text-sm font-bold uppercase tracking-wider opacity-80">Phase ${phase.phase}</span>
+                        </div>
+                        <span class="font-bold text-lg mb-1">${phase.title}</span>
+                        <span class="text-xs ${subTextColor}">${phase.months}</span>
+                    </button>
+                `;
+                navContainer.insertAdjacentHTML('beforeend', btnHTML);
+            });
+            lucide.createIcons();
+        }
+
+        function setActivePhase(phaseNum) {
+            activePhase = phaseNum;
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            const phaseData = PLAN_DATA.find(p => p.phase === activePhase);
+            
+            // Update Headers
+            document.getElementById('active-phase-months').innerText = phaseData.months;
+            document.getElementById('active-phase-mrr').innerText = phaseData.targetMRR;
+            document.getElementById('active-phase-title').innerText = phaseData.title;
+            document.getElementById('active-phase-goal').innerText = phaseData.goal;
+
+            renderNav();
+            renderMonths();
+            updateProgress();
+        }
+
+        function renderMonths() {
+            const phaseData = PLAN_DATA.find(p => p.phase === activePhase);
+            const gridContainer = document.getElementById('months-grid');
+            gridContainer.innerHTML = '';
+
+            phaseData.monthsData.forEach(month => {
+                const totalMonthTasks = month.actions.length;
+                let completedMonthTasks = 0;
+                
+                month.actions.forEach((_, idx) => {
+                     if(tasks[`m${month.month}-a${idx}`]) completedMonthTasks++;
+                });
+
+                const isMonthComplete = totalMonthTasks === completedMonthTasks && totalMonthTasks > 0;
+                const headerBg = isMonthComplete ? 'bg-gray-50' : 'bg-white';
+                const statusColor = isMonthComplete ? 'text-brand-gold' : 'text-brand-black';
+
+                // Build Actions List HTML
+                let actionsHTML = '';
+                month.actions.forEach((action, idx) => {
+                    const taskId = `m${month.month}-a${idx}`;
+                    const isChecked = !!tasks[taskId];
+                    
+                    const iconHTML = isChecked 
+                        ? `<i data-lucide="check-circle-2" class="w-6 h-6 text-brand-gold transition-colors duration-200"></i>`
+                        : `<i data-lucide="circle" class="w-6 h-6 text-gray-300 group-hover:text-gray-400 transition-colors duration-200"></i>`;
+                    
+                    const textClass = isChecked ? 'line-through text-gray-400' : 'text-gray-800 font-medium';
+
+                    actionsHTML += `
+                        <label class="task-label group">
+                            <input type="checkbox" class="task-checkbox" ${isChecked ? 'checked' : ''} onchange="toggleTask('${taskId}')">
+                            <div class="mt-0.5 flex-shrink-0 transition-transform active:scale-90">
+                                ${iconHTML}
+                            </div>
+                            <span class="text-sm leading-relaxed task-text ${textClass}">
+                                ${action}
+                            </span>
+                        </label>
+                    `;
+                });
+
+                const monthHTML = `
+                    <div class="flex flex-col h-full bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                        <!-- Month Header -->
+                        <div class="p-5 border-b border-gray-200 relative ${headerBg}">
+                            ${isMonthComplete ? `<div class="absolute top-4 right-4"><i data-lucide="award" class="w-6 h-6 text-brand-gold"></i></div>` : ''}
+                            <h3 class="text-xl font-bold flex items-center gap-2 mb-1 text-brand-black">
+                                <i data-lucide="calendar" class="w-5 h-5 text-brand-blue"></i> 
+                                Month ${month.month}
+                            </h3>
+                            <p class="text-sm font-semibold text-gray-600 min-h-[40px]">
+                                Focus: <span class="text-brand-black">${month.focus}</span>
+                            </p>
+                        </div>
+
+                        <!-- Actions List -->
+                        <div class="p-5 flex-grow">
+                            <h4 class="text-xs font-bold uppercase tracking-wider mb-4 text-brand-gold">
+                                Action Items
+                            </h4>
+                            <div class="space-y-4 flex flex-col">
+                                ${actionsHTML}
+                            </div>
+                        </div>
+                        
+                        <!-- Footer status -->
+                        <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 mt-auto flex justify-between items-center">
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</span>
+                            <span class="text-sm font-bold ${statusColor}">
+                                ${completedMonthTasks} / ${totalMonthTasks} Completed
+                            </span>
+                        </div>
+                    </div>
+                `;
+                gridContainer.insertAdjacentHTML('beforeend', monthHTML);
+            });
+            
+            // Re-initialize icons for newly added HTML
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDashboard();
+        });
     </script>
 </body>
 </html>
